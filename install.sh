@@ -63,19 +63,16 @@ function EnvJudgment() {
     ## 判定系统处理器架构
     case ${ARCH} in
     x86_64)
-        SYSTEM_ARCH="x86_64"
+        SYSTEM_ARCH="amd64"
         ;;
     aarch64)
-        SYSTEM_ARCH="ARM64"
-        ;;
-    armv7l)
-        SYSTEM_ARCH="ARMv7"
+        SYSTEM_ARCH="arm64"
         ;;
     armv6l)
-        SYSTEM_ARCH="ARMv6"
+        SYSTEM_ARCH="armv6l"
         ;;
     i686)
-        SYSTEM_ARCH="x86_32"
+        SYSTEM_ARCH="386"
         ;;
     *)
         SYSTEM_ARCH=${ARCH}
@@ -170,90 +167,22 @@ function ChooseVersion(){
     CHOICE_VERSION=${GO_VERSION[$INPUT_KEY]}
 }
 
-# /usr/local/openssl/bin/openssl version -a
-# export LD_LIBRARY_PATH=/usr/local/openssl/lib:$LD_LIBRARY_PATH
-# function InstallDep(){
-# 	if [ -d /usr/local/openssl ];then
-# 		echo "openssl already installed!"
-# 		return 0
-# 	fi
-# 	if [ ! -f /tmp/openssl-1.1.1p.tar.gz ];then
-# 		wget --no-check-certificate -O /tmp/openssl-1.1.1p.tar.gz https://www.openssl.org/source/openssl-1.1.1p.tar.gz
-# 	fi 
-
-# 	if [ ! -d /tmp/openssl-1.1.1p ];then
-# 		cd /tmp/ && tar -zxvf openssl-1.1.1p.tar.gz
-# 	fi
-# 	cd /tmp/openssl-1.1.1p
-
-# 	if [ ! -d /usr/local/openssl ];then
-# 		./config --prefix=/usr/local/openssl zlib-dynamic shared
-# 		make && make install
-# 	fi
-# }
 
 function DownloadFile(){
 
-	if [ -d /usr/local/python${CHOICE_VERSION} ];then
+	if [ -d /usr/local/go${CHOICE_VERSION} ];then
 		echo "${CHOICE_VERSION} already installed!"
 		return 0
 	fi
-
-	url="https://www.python.org/ftp/python/${CHOICE_VERSION}/Python-${CHOICE_VERSION}.tar.xz"
+	url="https://go.dev/dl/go${CHOICE_VERSION}.linux-amd64.tar.gz"
 	echo $url
-	tmp_file=/tmp/Python-${CHOICE_VERSION}.tar.xz
-	if [ ! -f $tmp_file ];then
-		wget -O $tmp_file $url
-	fi
 
-	cd /tmp
-	if [ ! -d /tmp/Python-${CHOICE_VERSION} ];then
-		tar -xvJf Python-${CHOICE_VERSION}.tar.xz
-	fi
-
-	mkdir python-build
-	cd python-build && rm -rf ./*
-
-	# --with-openssl-rpath=auto  \
-	# 	--with-openssl=/usr/include/openssl  \
-	# 	OPENSSL_LDFLAGS=-L/usr/include/openssl  \
-	# 	OPENSSL_LIBS=-l/usr/include/openssl/ssl \
-	# 	OPENSSL_INCLUDES=-I/usr/include/openssl 
-
-	/tmp/Python-${CHOICE_VERSION}/configure --prefix=/usr/local/python${CHOICE_VERSION} \
-		--enable-optimizations \
-		--with-ssl \
-		--with-openssl=/usr/local/openssl \
-		--with-openssl-rpath=auto
-
-	make -j2
-	make install
-
-	if [ -d /usr/local/python${CHOICE_VERSION} ];then
-		ln -s /usr/local/python${CHOICE_VERSION}/bin/python /usr/bin/python${CHOICE_VERSION}
-		ln -s /usr/local/python${CHOICE_VERSION}/bin/pip /usr/bin/pip${CHOICE_VERSION}
-	fi
-
-	if [ -d /tmp/python-build ];then
-		rm -rf /tmp/python-build
-	fi
-}
-
-function RemoveFile(){
-
-	if [ -d /tmp/Python-${CHOICE_VERSION} ];then
-		rm -rf /tmp/Python-${CHOICE_VERSION}
-	fi
-
-	if [ -f /tmp/Python-${CHOICE_VERSION}.tar.xz ];then
-		rm -rf /tmp/Python-${CHOICE_VERSION}.tar.xz
-	fi
 }
 
 
 function AuthorMessage() {
     echo -e "\n${GREEN} ------------ 脚本执行结束 ------------ ${PLAIN}\n"
-    echo -e " \033[1;34m官方网站\033[0m https://github.com/midoks/choose-linux-python\n"
+    echo -e " \033[1;34m官方网站\033[0m https://github.com/midoks/choose-linux-go\n"
 }
 
 function RunMain(){
@@ -261,7 +190,6 @@ function RunMain(){
 	PermissionJudgment
 	ChooseVersion
     DownloadFile
-    RemoveFile
     AuthorMessage
 }
 # 执行
