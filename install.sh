@@ -170,6 +170,8 @@ function ChooseVersion(){
 
 function DownloadFile(){
 
+	cd /tmp
+
 	if [ -d /usr/local/go${CHOICE_VERSION} ];then
 		echo "${CHOICE_VERSION} already installed!"
 		return 0
@@ -182,8 +184,6 @@ function DownloadFile(){
 	wget --no-check-certificate -O $url
 	rm -rf /usr/local/go
 	tar -C /usr/local -xzf $file
-
-
 
 }
 
