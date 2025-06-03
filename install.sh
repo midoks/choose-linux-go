@@ -174,8 +174,16 @@ function DownloadFile(){
 		echo "${CHOICE_VERSION} already installed!"
 		return 0
 	fi
-	url="https://go.dev/dl/go${CHOICE_VERSION}.linux-amd64.tar.gz"
+
+	file=go${CHOICE_VERSION}.linux-amd64.tar.gz
+	url="https://go.dev/dl/${file}"
 	echo $url
+
+	wget --no-check-certificate -O $url
+	rm -rf /usr/local/go
+	tar -C /usr/local -xzf $file
+
+
 
 }
 
