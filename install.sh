@@ -181,7 +181,7 @@ function DownloadFile(){
 	url="https://go.dev/dl/${file}"
 	echo $url
 
-	wget --no-check-certificate -O $url
+	wget --no-check-certificate -O $file $url
 	rm -rf /usr/local/go
 	tar -C /usr/local -xzf $file
 
