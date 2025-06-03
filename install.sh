@@ -177,7 +177,7 @@ function DownloadFile(){
 		return 0
 	fi
 
-	file=go${CHOICE_VERSION}.linux-amd64.tar.gz
+	file=go${CHOICE_VERSION}.linux-${SYSTEM_ARCH}.tar.gz
 	url="https://go.dev/dl/${file}"
 	echo $url
 
@@ -185,6 +185,18 @@ function DownloadFile(){
 	rm -rf /usr/local/go
 	tar -C /usr/local -xzf $file
 
+	FIND_GO_ENV=`cat /root/.bashrc |grep go`
+	if [ "$FIND_GO_ENV" == "" ];then
+		echo -e "\n# Go语言环境配置\nexport PATH=\$PATH:/usr/local/go/bin\nexport GOPATH=\$HOME/go\nexport PATH=\$PATH:\$GOPATH/bin" >> ~/.bashrc
+	fi
+
+	source ~/.bashrc
+}
+
+function RemoveFile(){
+	if [ -d /tmp/go${CHOICE_VERSION}.linux-${SYSTEM_ARCH}.tar.gz ];then
+		rm -rf /tmp/go${CHOICE_VERSION}.linux-${SYSTEM_ARCH}.tar.gz
+	fi
 }
 
 
@@ -198,6 +210,7 @@ function RunMain(){
 	PermissionJudgment
 	ChooseVersion
     DownloadFile
+    RemoveFile
     AuthorMessage
 }
 # 执行
